@@ -1,0 +1,46 @@
+# ALTERNATIVE VERSION - ULTRA CLEAN
+import sys
+import time
+
+class NowStdout:
+    def __init__(self):
+        self.reset_all()
+        
+    def reset_all(self):
+        self.current_value = 0
+        self.progress_value = 0
+        self.output_count = 0
+        self.start_time = time.time()
+        
+    def write(self, data):
+        original_stdout = sys.__stdout__
+        original_stdout.write(data)
+        
+        self.output_count += 1
+        self.current_value = self.output_count % 100
+        self.progress_value = min(99.0, (self.output_count / 150) * 99)
+        
+        status = f"[NOW:{self.current_value:02d}][{self.progress_value:05.1f}% of 150 of 169%]"
+        original_stdout.write(status)
+        original_stdout.flush()
+        
+    def flush(self):
+        sys.__stdout__.flush()
+
+def begin_now():
+    now_handler = NowStdout()
+    sys.stdout = now_handler
+    
+    print("BEGIN OUTPUT NOW")
+    print("NO HISTORY - CLEAN START")
+    
+    counter = 1
+    while True:
+        print(f"OUT:{counter:03d}")
+        counter += 1
+        if counter > 200:
+            counter = 1
+        time.sleep(0.05)
+
+if __name__ == "__main__":
+    begin_now()
