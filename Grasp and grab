@@ -1,0 +1,44 @@
+import sys
+import time
+import random
+
+class StdoutHandler:
+    def __init__(self):
+        self.count = 0
+        self.max_count = 150
+        self.progress = 0
+        
+    def write(self, text):
+        # Original stdout behavior
+        sys.__stdout__.write(text)
+        
+        # Extract and process numbers
+        if text.strip().isdigit():
+            num = int(text.strip())
+            self.process_number(num)
+            
+    def process_number(self, num):
+        self.count += 1
+        self.progress = min(99, (self.count / self.max_count) * 99)
+        
+        # Display progress
+        if self.count % 10 == 0:
+            progress_text = f"\rProgress: {self.progress:.1f}% of {self.max_count} of 169%"
+            sys.__stdout__.write(progress_text)
+            sys.__stdout__.flush()
+
+# Usage example
+def generate_numbers():
+    handler = StdoutHandler()
+    sys.stdout = handler
+    
+    number = 1
+    while handler.progress < 99:
+        print(str(number))
+        number += random.randint(1, 3)
+        time.sleep(0.05)
+        
+    print("\nSequence complete!")
+
+if __name__ == "__main__":
+    generate_numbers()
