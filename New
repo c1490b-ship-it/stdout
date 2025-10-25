@@ -1,0 +1,51 @@
+import sys
+import time
+
+class FreshStdout:
+    def __init__(self):
+        self.current_numbers = []
+        self.progress = 0
+        self.count = 0
+        self.total_target = 150
+        self.percent_target = 169
+        
+    def write(self, text):
+        sys.__stdout__.write(text)
+        
+        if text.strip():
+            self.process_output(text)
+            
+    def flush(self):
+        sys.__stdout__.flush()
+        
+    def process_output(self, text):
+        now = time.time()
+        self.count += 1
+        
+        current_number = self.count % 100
+        self.current_numbers.append(current_number)
+        
+        if len(self.current_numbers) > 50:
+            self.current_numbers.pop(0)
+            
+        self.progress = min(99, (self.count / self.total_target) * 99)
+        
+        progress_display = f"\rNOW: {current_number} | {self.progress:.1f}% of {self.total_target} of {self.percent_target}%"
+        sys.__stdout__.write(progress_display)
+        sys.__stdout__.flush()
+
+def start_fresh_stdout():
+    fresh = FreshStdout()
+    sys.stdout = fresh
+    
+    print("FRESH START - NO OLD HISTORY")
+    print("STDOUT READY NOW")
+    
+    number = 1
+    while fresh.progress < 99:
+        print(f"{number}")
+        number = (number + 1) % 100
+        time.sleep(0.1)
+
+if __name__ == "__main__":
+    start_fresh_stdout()
